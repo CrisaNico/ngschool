@@ -21,11 +21,21 @@
 			<label>Nome </label>
 			<input class="form-control" ng-model="d.nome" />
 		</p>
+
+		<form ng-submit="save()">
+			<p class="form-group">
+			<label>Cognome </label>
+			<input class="form-control" ng-model="d.cognome" autofocus required />
+			<label>Nome </label>
+			<input class="form-control" ng-model="d.nome" />
+		</p>
+		</form>
+		
 			<button type="submit" class="btn btn-primary"  data-toggle="tooltip" data-placement="bottom" title="Salva">
 				<i class="fa fa-save"></i> Salva
 			</button>
 			<a accesskey="n" class="btn btn-success" href="#/persone/new"><i class="fa fa-file-o"></i> Nuovo</a>
 			<a accesskey="l" class="btn btn-default" href="#/persone"><i class="fa fa-table"></i> Elenco</a>
 			<a accesskey="x" class="btn btn-danger" ng-click="remove()"><i class="fa fa-trash"></i> Elimina</a>
-	</article>
+	</form>
 </section>

@@ -11,9 +11,9 @@ app.service('crudService', function($http, limitToFilter) {
 		},
 		set: function(D,callback) {
 			if (!D) return [{'error':'Nessun dato da inserire.'}];
-			//if (D._rev) delete(D._rev);
-			if (D.__id=='new') delete (D.__id)
+			if (D._id=='new' || D._id==null) delete (D._id)
 			if (D._id){
+				//if (D._rev) delete(D._rev);
 				$http.put(S+D._id,D).success(callback);  
 			}else{
 				$http.post(S,D).success(callback).error(onError);  
@@ -22,7 +22,7 @@ app.service('crudService', function($http, limitToFilter) {
 		fnd: function(D,callback){
 			if (!D) return [{'error':'Nessun criterio specificato.'}];
 			$http({
-				url : S+'_find/',
+				url : S+'/_find/',
 				method : 'POST',
 				data : {"selector":D},
 				dataType : 'json'
