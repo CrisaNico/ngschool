@@ -8,6 +8,9 @@ app.controller('AppController', ['swInfo', function( swInfo ) {
         url:"#/persone",
         title:"Persone"
        },{
+           url:"#/classi",
+           title:"Classi"
+       },{
         url:"#/opzioni",
         title:"Opzioni"
        }
