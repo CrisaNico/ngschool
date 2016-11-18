@@ -1,23 +1,77 @@
 app.controller('PersoneController', ['$scope', 'crudService','$routeParams','$http', function($scope, crudService,$routeParams,$http) {
     var vm = $scope;
-	vm.id= $routeParams && $routeParams.id || false; // Dichiaro il routeParams per l'id per il crudService che serve ad indicare che id uso nel DB '
+	window.vm=vm;
+	vm.id= $routeParams && $routeParams.id || false;
     vm.data = [];
+	vm.gridEmailsOptions={
+		columnDefs:[
+			{ name: 'email'},
+			{ name: 'note' }
+		],
+		enableCellEditOnFocus: true,
+		enableRowSelection: true,
+		selectionRowHeaderWidth: 35,
+		enableSelectAll: true,
+		multiSelect:true,
+		onRegisterApi:function(gridApi){
+			vm.gridEmailsApi = gridApi;
+		}		
+	};
+	vm.gridAdressOptionss={
+		columDefs:[
+			{name: "indirizzo"},
+			{name: "comune"},
+			{name: "provincia"},
+			{name: "cap"},
+			{name: "telefono"}
+		],
+		enableCellEditOnFocus: true,
+		enableRowSelection: true,
+		selectionRowHeaderWidth: 35,
+		enableSelectAll: true,
+		multiSelect:true,
+		onRegisterApi:function(gridApi){
+			vm.gridAdressApi = gridApi;
+		}
+	};
     var populateData = function(response){
         var data = response.data && response.data.docs ||[];
 		vm.data=JSON.parse(JSON.stringify(data));
-		if (vm.id) vm.d=vm.data[0] || {};
-    }
-	/*La function populateData prende il JSON dal database e va a popolare
-	il form nella pagina di persone.html*/
+		if (vm.id){
+			vm.d=vm.data[0] || {};
+			vm.gridEmailsOptions.data=vm.d.emails;
+			vm.gridAdressOptions.data=vm.d.adress;
+		}
+		
+    };
+	vm.createEmail=function(){
+		vm.d.emails.push({})
+	};
+	vm.createAdress=function(){
+		vm.d.adress.push({})
+	};
+	vm.removeEmail = function(){	
+		//var d=vm.gridEmailsApi.grid.selection.lastSelectedRow.entity
+		console.log(vm.gridEmailsApi.grid)
+		var rws=vm.gridEmailsApi.grid.selection.getSelectedRows();
+		rws.map(function(d){
+			vm.d.emails.splice(vm.d.emails.indexOf(d),1)
+		})
+		
+    };
+	vm.removeAdress = function(){
+		//var d=vm.gridAdressApi.grid.selection.lastSelectedRow.entity
+		console.log(vm.gridAdressApi.grid)
+		var rws=vm.gridAdressApi.grid.selection.getSelectedRows();
+		rws.map(function(d){
+			vm.d.adress.splice(vm.d.adress.indexOf(d),1)
+		})
+	};	
     vm.read = function(){
 		var fnd={"cat":"persone"};
 		if (vm.id) fnd._id=vm.id;
         crudService.fnd(fnd, populateData);
-    };
-	/*La function read cosa fa? In pratica
-	legge quello che c'è nel db e poi tramite il crudService
-	va a popolare il form su persone.html . La var fnd viene definita
-	nel crudService (leggere commento nel relativo file)*/	
+    };	
     vm.save = function(){
 		vm.d.cat='persone';
 		if (vm.id=='new') delete(vm.id)
@@ -27,23 +81,18 @@ app.controller('PersoneController', ['$scope', 'crudService','$routeParams','$ht
 			}
 		});
     };
-	/* La function save controlla intanto guarda se l'id corrisponde a quello
-	della fucntion fnd in crudService. Controlla se l'id inserito è nuovo viene richiamta
-	la function set del crudService. Se è diverso al metodo nuovo viene ritornata alla 
-	pagina personale.*/
 	vm.remove = function(){
         crudService.del(vm.d,function(r){
 			window.location="#/persone/"
 		});
     };
-	/*La function remove semplicemente rimuove un utente nel form.*/
     vm.init = function(){
         vm.read();
 		var pr=function(){
 			$('[ng-model="cognome"]').focus()
 		}
 		$(pr)
-    };	
+    };
 	vm.init();
 }]);
 
